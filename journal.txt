@@ -1,0 +1,15 @@
+Current implementation consists of:
+
+Face tracking and face locking using 2 MG servos for rotational and a esp32-s3 with OV5680 camera module to capture live video which is scraped in a python backend for facial reconition processing nd coordination analyst to send servo coordinates over to microcontroller so microcontroller knows where to move in terms of x,y axis
+
+current implementation also has emotional recognition 
+
+form of communication between python backend server and microntroler is a UART form utilizing serial and custom prcessed data.  
+
+thge scraping of live streaming from esp32-s3 is done so by usiung CV2 library on a custom IP that only shows the live streaming . aka a :81 port
+
+utilizes multi threading to handle continuas scpraing of live streaming and for facial recognition and sending UART data on the side 
+
+emotional recognition is done so by using a FER library
+
+Moved CameraWebServer files to a new directory. Refactored OLED display code to use a shared display object and modularized emoticon rendering (happy, angry, study faces) with new header and source files. Added multi-threaded emotion data sending in FacialRecognition.py and updated rotational sketch to support emotion-based display switching. Added a project journal for documentation.

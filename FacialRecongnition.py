@@ -11,6 +11,16 @@ emotion_detector = FER(mtcnn=True)  # mtcnn=True uses better face detection inte
 
 lock = threading.Lock()
 
+def sendingEmotionsToOled():
+    global top_emotion
+    
+    while True:
+        if top_emotion:
+            data = f"EMO##{str(top_emotion)}"
+            print(f"sending emotion data over: {data}\n")
+            ser.write(data.encode())
+            time.sleep(60)
+
 def detectFace():
     global faces, frame
     while True:
@@ -69,8 +79,10 @@ while True:
 
     if i == 0:
         face_thread = threading.Thread(target=detectFace)
+        emotionDataThread = threading.Thread(target=sendingEmotionsToOled)
         i += 1
         face_thread.start()
+        emotionDataThread.start()
 
     # Detect emotions directly
     result = emotion_detector.detect_emotions(frame)

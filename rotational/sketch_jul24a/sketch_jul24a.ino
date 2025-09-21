@@ -2,6 +2,10 @@
 #include <Wire.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
+#include "happyFace.h"
+#include "display.h"
+
+// oled settings
 
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
@@ -14,6 +18,7 @@ Servo servoY;
 int servoYPOS = 60;
 int servoXPOS = 90;
 int ledPin = 9;
+String globalEmotion = "";
 
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire);
 
@@ -58,6 +63,17 @@ void drawAnimeDevil(int frame) {
 
 
 
+
+// TO DO
+// multi thread to keep track of which emotions is live right now
+
+
+
+
+
+
+
+
 void setup() {
   Serial.begin(9600);
   servoY.attach(8);
@@ -68,14 +84,38 @@ void setup() {
   servoX.write(servoXPOS);
   
   display.begin(SSD1306_SWITCHCAPVCC, OLED_ADDR);
+  happyFaceSetup();
 }
 
 void loop() {
-  static int frame = 0;
-  drawAnimeDevil(frame);
-  frame++;
+  //static int frame = 0;
+  //drawAnimeDevil(frame);
+  //frame++;
+  happyFaceLoop();
+  
   if (Serial.available()) {
+
+    int emotionIndex = cmd.indexOf('EMO##');
+    if (emotionIndex != 1){ // if the data being sent over is emotion data
+
+
+
+
+
+      // TO DO 
+
+      if cmd.substring(emotionIndex + 5) == "happy"{
+        happyFaceSetup();
+
+        globalEmotion = "Happy" // global variable to set multhread funciton to start looping on the needed loop
+      }
     
+
+
+
+
+
+    } else{
     String cmd = Serial.readStringUntil('\n');
     Serial.print("Received: ");
     Serial.println(cmd);
@@ -83,30 +123,30 @@ void loop() {
   
     int yIndex = cmd.indexOf('Y');
     int xIndex = cmd.indexOf('X');
-
       if (yIndex != -1 && xIndex != -1) {
-      // Lets us know we got signal
-      int servoYPosAdd = cmd.substring(yIndex + 1, yIndex + 4).toInt();
-      int servoXPosAdd = cmd.substring(xIndex + 1).toInt();
-      servoYPOS += -(servoYPosAdd);
-      servoXPOS +=  servoXPosAdd;
+        // Lets us know we got signal
+        int servoYPosAdd = cmd.substring(yIndex + 1, yIndex + 4).toInt();
+        int servoXPosAdd = cmd.substring(xIndex + 1).toInt();
+        servoYPOS += -(servoYPosAdd);
+        servoXPOS +=  servoXPosAdd;
 
-      // Keep servoYPOS in valid range
-      servoYPOS = constrain(servoYPOS, 0, 180);
-      servoXPOS = constrain(servoXPOS, 0, 180);
+        // Keep servoYPOS in valid range
+        servoYPOS = constrain(servoYPOS, 0, 180);
+        servoXPOS = constrain(servoXPOS, 0, 180);
 
-      Serial.println("Adding Y angle:");
-      Serial.println("Y:");
-      Serial.println(servoYPosAdd);
-      Serial.println(servoYPOS);
-      servoY.write(servoYPOS);
-      Serial.println("Adding X angle:");
-      Serial.println("X:");
-      Serial.println(servoXPosAdd);
-      Serial.println(servoXPOS);
-      servoX.write(servoXPOS);
+        Serial.println("Adding Y angle:");
+        Serial.println("Y:");
+        Serial.println(servoYPosAdd);
+        Serial.println(servoYPOS);
+        servoY.write(servoYPOS);
+        Serial.println("Adding X angle:");
+        Serial.println("X:");
+        Serial.println(servoXPosAdd);
+        Serial.println(servoXPOS);
+        servoX.write(servoXPOS);
 
 
+      }
     }
   }
 }
