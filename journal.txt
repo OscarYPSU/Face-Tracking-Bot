@@ -13,3 +13,24 @@ utilizes multi threading to handle continuas scpraing of live streaming and for 
 emotional recognition is done so by using a FER library
 
 Moved CameraWebServer files to a new directory. Refactored OLED display code to use a shared display object and modularized emoticon rendering (happy, angry, study faces) with new header and source files. Added multi-threaded emotion data sending in FacialRecognition.py and updated rotational sketch to support emotion-based display switching. Added a project journal for documentation.
+
+
+Problem:
+Your OLED display initialization (display.begin(...)) kept failing, printing “SSD1306 allocation failed” and entering the infinite loop. However, when you removed the studySetup() call, it suddenly worked fine.
+Cause:
+studySetup() was being called immediately after display.begin(), before the display was fully ready or before other hardware (like I²C devices or pins) finished initializing. Inside studySetup(), something was interfering with the I²C communication — possibly reinitializing the Wire bus, using the same pins, or drawing to the display before it was ready. That caused display.begin() to fail because the OLED never received the proper I²C handshake.
+Solution:
+You added a short delay after display.begin() (for example, delay(100);) to give the OLED time to stabilize before calling studySetup(). That allowed the display initialization to complete properly, so the program could proceed without hitting the allocation error.
+
+
+
+Introduced pet stats (hunger, health, sleepiness, happiness, age) and their update intervals in CentreFace.ino. Updated study.cpp to use new animation frames and removed the old book cartoon bitmap. Modified FacialRecongnition.py to send emotions in lowercase. Added empty DB/insert.py and DB/retrieve.py for future database operations.
+
+
+Problem/Conflict:
+While developing a simple game on an Arduino with an OLED display, I wanted to animate a character using multiple bitmap frames. My first instinct was to use delay() for timing the frames. However, I quickly realized that using delay() blocked the rest of the code, meaning I couldn’t update the game state or read input while the animation was running. I also considered multi-threading to handle animations separately, but the Arduino Uno doesn’t support threads, so that approach wasn’t possible.
+I needed a solution that would allow the animation to run smoothly while still allowing other tasks like checking player input, updating scores, and handling collisions.
+Solution:
+I implemented a non-blocking timer approach using millis(). I kept track of the last frame update and compared it with the current time. Whenever enough time had passed, I updated the animation frame and reset the timer. This allowed the loop to continue running other tasks in parallel with the animation, essentially simulating multitasking without real threads.
+Result/Outcome:
+The character animation ran smoothly at the desired frame rate, and the game could still respond to input, update the state, and handle other logic simultaneously. It taught me a valuable lesson about working within the constraints of microcontrollers and designing code to be efficient and non-blocking, even without advanced features like threading.

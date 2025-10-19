@@ -62,18 +62,6 @@ void drawAnimeDevil(int frame) {
 }
 
 
-
-
-// TO DO
-// multi thread to keep track of which emotions is live right now
-
-
-
-
-
-
-
-
 void setup() {
   Serial.begin(9600);
   servoY.attach(8);
@@ -84,39 +72,32 @@ void setup() {
   servoX.write(servoXPOS);
   
   display.begin(SSD1306_SWITCHCAPVCC, OLED_ADDR);
-  happyFaceSetup();
+
+  display.clearDisplay();
 }
 
 void loop() {
   //static int frame = 0;
   //drawAnimeDevil(frame);
   //frame++;
-  happyFaceLoop();
+
+  if (globalEmotion == "Happy"){
+    happyFaceLoop();
+  }
   
   if (Serial.available()) {
-
-    int emotionIndex = cmd.indexOf('EMO##');
-    if (emotionIndex != 1){ // if the data being sent over is emotion data
-
-
-
-
-
-      // TO DO 
-
-      if cmd.substring(emotionIndex + 5) == "happy"{
-        happyFaceSetup();
-
-        globalEmotion = "Happy" // global variable to set multhread funciton to start looping on the needed loop
-      }
-    
-
-
-
-
-
-    } else{
     String cmd = Serial.readStringUntil('\n');
+
+    int emotionIndex = cmd.indexOf("EMO##");
+    if (emotionIndex != -1){ // if the data being sent over is emotion data
+      // TO DO 
+      if (cmd.substring(emotionIndex + 5) == "happy" && globalEmotion != "Happy"){ // wasnt happy emotion before, setup happy face
+        happyFaceSetup();
+        globalEmotion = "Happy"; // global variable to set multhread funciton to start looping on the needed loop
+        Serial.println("Setting oled screen to happy face");
+      }
+    } else { // else its position data
+
     Serial.print("Received: ");
     Serial.println(cmd);
 

@@ -16,9 +16,11 @@ def sendingEmotionsToOled():
     
     while True:
         if top_emotion:
-            data = f"EMO##{str(top_emotion)}"
+            data = f"EMO##{str(top_emotion).lower()}"
             print(f"sending emotion data over: {data}\n")
             ser.write(data.encode())
+            
+            # waits a minute to allow oled screen to settle animations            
             time.sleep(60)
 
 def detectFace():

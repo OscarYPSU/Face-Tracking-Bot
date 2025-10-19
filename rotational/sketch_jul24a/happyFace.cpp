@@ -81,5 +81,4 @@ void happyFaceLoop() {
   drawSmile(faceX, faceY, smileWidth, smileHeight, smileYOffset + smileOffset);
   
   display.display();
-  delay(50);
 }
