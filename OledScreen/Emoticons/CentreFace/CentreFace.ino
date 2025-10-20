@@ -10,9 +10,15 @@
 #include "angryFace.h"
 #include "display.h"
 #include "study.h"
+#include "talkFace.h"
+#include "neutralFace.h"
+#include "milis.h"
+
+// sets up the miilis
+unsigned long currentMilis = 0; 
+
 
 // tachi
-
 // Pet stats
 int hunger = 50;      // 0 = full, 100 = starving
 int health = 100;     // 0 = dead, 100 = healthy
@@ -51,12 +57,10 @@ void setup() {
   display.setCursor(0,0);
   display.println("Starting Screen.....");
   display.display();
+  neutralFaceSetUp();
 }
 
 void loop() {
-  // loop for oled screen
-  studyLoop();
-
   unsigned long currentMilis = millis();
   // hunger update interval
   if (currentMilis - lastHungerUpdate >= hungerUpdateInterval){

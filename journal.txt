@@ -34,3 +34,11 @@ Solution:
 I implemented a non-blocking timer approach using millis(). I kept track of the last frame update and compared it with the current time. Whenever enough time had passed, I updated the animation frame and reset the timer. This allowed the loop to continue running other tasks in parallel with the animation, essentially simulating multitasking without real threads.
 Result/Outcome:
 The character animation ran smoothly at the desired frame rate, and the game could still respond to input, update the state, and handle other logic simultaneously. It taught me a valuable lesson about working within the constraints of microcontrollers and designing code to be efficient and non-blocking, even without advanced features like threading.
+
+Problem:
+While working on a microcontroller project, I needed to share a timing variable (unsigned long millis) across multiple .cpp files. Initially, I defined the variable directly in the header file. This caused linker errors because each file that included the header created its own separate definition, violating the One Definition Rule in C++.
+Solution:
+I learned that global variables should only be declared in headers and defined in a single .cpp file. To fix the issue, I used the extern keyword in the header to declare the variable and initialized it only once in the main .cpp file. This ensured all modules referenced the same variable, eliminating 
+
+
+Introduced neutralFace.cpp and neutralFace.h for a new emoticon. Added milis.h for millis tracking. Removed unnecessary display includes from headers, deleted display.cpp, and updated CentreFace.ino to set up the neutral face on startup. duplicate symbol errors.
