@@ -1,7 +1,8 @@
+#include "emotions.h"
 #include "display.h"
-#include "talkFace.h"
 #include "milis.h"
 
+// talking face
 // 'New Piskel-1', 128x64px
 const unsigned char talkFaceFrame1  [] PROGMEM = {
 	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 
@@ -204,7 +205,6 @@ const unsigned char talkFaceFrame3 [] PROGMEM = {
 	0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff
 };
 
-
 void talkFaceSetup(){
   display.clearDisplay();
   display.setTextSize(1);
@@ -236,3 +236,69 @@ void talkFaceLoop(){
 		lastUpdatedTalkFaceMilis = currentMilis;
 	} 
 }
+
+
+//neutral faces
+
+void neutralFaceSetUp(){
+  //temproryu place holder
+  display.clearDisplay();
+  display.setTextSize(1);
+  display.setTextColor(SSD1306_WHITE);
+  display.setCursor(0,0);
+  display.println("Neutral Face");
+  display.display();
+}
+
+void neutralFaceLoop(){
+	display.clearDisplay();
+  display.setTextSize(1);
+  display.setTextColor(SSD1306_WHITE);
+  display.setCursor(0,0);
+  display.println("Neutral Face");
+  display.display();
+}
+
+
+// hunger face
+
+void hungerFaceSetup(){
+
+}
+
+void hungerFaceLoop(){
+	display.clearDisplay();
+  display.setTextSize(1);
+  display.setTextColor(SSD1306_WHITE);
+  display.setCursor(0,0);
+  display.println("Hunger Face");
+  display.display();
+}
+
+
+// sad face
+void sadFaceSetup(){
+	display.clearDisplay();
+  display.setTextSize(1);
+  display.setTextColor(SSD1306_WHITE);
+  display.setCursor(0,0);
+  display.println("Sad Face");
+  display.display();
+}
+
+void sadFaceLoop(){
+}
+
+// happy face
+void happyFace(){
+
+}
+void happyFaceLoop(){
+	display.clearDisplay();
+  display.setTextSize(1);
+  display.setTextColor(SSD1306_WHITE);
+  display.setCursor(0,0);
+  display.println("Happy Face");
+  display.display();
+}
+

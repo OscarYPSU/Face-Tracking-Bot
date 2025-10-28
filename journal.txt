@@ -42,3 +42,5 @@ I learned that global variables should only be declared in headers and defined i
 
 
 Introduced neutralFace.cpp and neutralFace.h for a new emoticon. Added milis.h for millis tracking. Removed unnecessary display includes from headers, deleted display.cpp, and updated CentreFace.ino to set up the neutral face on startup. duplicate symbol errors.
+
+Consolidated multiple face emotion implementations into a single 'emotions' module, removing redundant face files and headers. Added servo control abstraction and refactored the main Arduino sketch to use new emotion and servo modules. Introduced a Flask-based web interface with a simple pet logic backend, including real-time hunger display, and added serial communication scripts. Cleaned up unused code and improved modularity for easier maintenance and extension. (wrote HTTPS endpoints for getting data) Used asyncronsouse functrion in javacript in html for continuously update in hunger display using fetch

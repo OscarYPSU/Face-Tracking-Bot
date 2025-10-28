@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Home</title>
+</head>
+<body>
+  <h1>Hello, World!</h1>
+  <p>Current Hunger is: <span id ="hunger"></span></p>
+</body>
+
+<script>
+    async function updateHunger() {
+        const response = await fetch('/getHunger');
+        const data = await response.json();
+        document.getElementById('hunger').textContent = data.hunger;
+    }
+
+    // Fetch hunger every second
+    setInterval(updateHunger, 1000);
+</script>
