@@ -1,12 +1,14 @@
 from flask import Flask, render_template, jsonify
 from PetLogic import logic
 import threading
+import pdb
 
 #Starts flask application which allows integration of html data to python data and vice versa
 app = Flask(__name__)
-    
+
+pet = logic.Pet()
 #set  up threadiung for pet logic
-petLogicThread = threading.Thread(target=logic.runPet)
+petLogicThread = threading.Thread(target=pet.runPet)
 # Optional: make it a daemon thread so it stops when the main program exits
 petLogicThread.daemon = True
 
@@ -18,10 +20,19 @@ def webStart():
 def startPage():
     return render_template('home.html')
 
-@app.route('/getHunger')
+@app.route('/hunger', methods=["GET"])
 def getHunger():
-    data = {"hunger": logic.getHunger()} # gets data
-    
+    data = {"hunger": pet.getHunger()} # gets data
+    return jsonify(data)
+
+@app.route("/hunger", methods=["POST"])
+def addHunger():
+    pet.feed()
+    return jsonify({"message":"Pet Fed!"})
+
+@app.route('/happiness', methods=["GET"])
+def getHappiness():
+    data = {"happiness": pet.getHappiness()} # gets data
     return jsonify(data)
 
 if __name__ == "__main__":

@@ -7,15 +7,36 @@
 <body>
   <h1>Hello, World!</h1>
   <p>Current Hunger is: <span id ="hunger"></span></p>
+  <button onclick = "feed()">Feed!</button>
+  <p>Current Happiness: <span id = "happiness"></span></p>
 </body>
 
 <script>
     async function updateHunger() {
-        const response = await fetch('/getHunger');
-        const data = await response.json();
-        document.getElementById('hunger').textContent = data.hunger;
+      const response = await fetch('/hunger');
+      const data = await response.json();
+      document.getElementById('hunger').textContent = data.hunger;
+    }
+    
+    async function feed() {
+      const response = await fetch("/hunger", {
+        method: "POST"
+      });
+
+      const data = await response.json();
+      console.log(data.message);
+
+      // updates hunger right away aftewards
+      updateHunger();
+    }
+
+    async function updateHappiness(){
+      const response = await fetch('/happiness');
+      const data = await response.json();
+      document.getElementById("happiness").textContent = data.happiness;
     }
 
     // Fetch hunger every second
     setInterval(updateHunger, 1000);
-</script>
+    setInterval(updateHappiness, 1000);
+  </script>
