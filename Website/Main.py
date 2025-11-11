@@ -35,6 +35,21 @@ def getHappiness():
     data = {"happiness": pet.getHappiness()} # gets data
     return jsonify(data)
 
+@app.route('/happiness', methods=["POST"])
+def play():
+    pet.play()
+    return jsonify({"message":"pet is played with!"})
+
+@app.route('/sleepiness', methods=["GET"])
+def getSleepiness():
+    data = {"sleepiness":pet.getSleep()}
+    return jsonify(data)
+
+@app.route("/sleepiness", methods=["PUT"])
+def sleep():
+    pet.sleep()
+    return jsonify({"message":"pet is asleep"})
+
 if __name__ == "__main__":
     petLogicThread.start()
     webStart()

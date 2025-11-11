@@ -9,6 +9,9 @@
   <p>Current Hunger is: <span id ="hunger"></span></p>
   <button onclick = "feed()">Feed!</button>
   <p>Current Happiness: <span id = "happiness"></span></p>
+  <button onclick = "play()">Play!</button>
+  <p id = "sleepiness">Current Sleepiness</p>
+  <button onclick = "sleep()">Sleep!</button>
 </body>
 
 <script>
@@ -30,13 +33,39 @@
       updateHunger();
     }
 
+    // updates the happiness count on frontend
     async function updateHappiness(){
       const response = await fetch('/happiness');
       const data = await response.json();
       document.getElementById("happiness").textContent = data.happiness;
     }
 
+    async function play(){
+      const response = await fetch("/happiness", {
+        method: "POST"
+      });
+      const data = await response.json();
+      console.log(data.message);
+      updateHappiness();
+    }
+
+    async function updateSleep(){
+      const response = await fetch('/sleepiness');
+      const data = await response.json();
+      document.getElementById("sleepiness").textContent = data.sleepiness;
+    }
+
+    async function sleep(){
+      const response = await fetch('/sleepiness', {
+        method: "PUT"
+      });
+      const data = await response.json();
+      console.log(data.message);
+      updateSleep();
+    }
+
     // Fetch hunger every second
     setInterval(updateHunger, 1000);
     setInterval(updateHappiness, 1000);
+    setInterval(updateSleep, 1000);
   </script>

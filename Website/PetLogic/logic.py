@@ -15,7 +15,7 @@ class Pet():
         self.happiness = 80; # 0 = Depressed, 50 = content, 100 = happy
         # also want to add statuses
         self.age = 0; # add a age system
-
+        self.status = "" # eg. sleep, playing etc...
 
         # use counters to track elapsed time for each stat
         self.last_hunger_update = time.time()
@@ -36,6 +36,17 @@ class Pet():
     def getHappiness(self):
         return self.happiness
 
+    def play(self):
+        self.happiness += 5
+    
+    def getSleep(self):
+        return self.sleepiness
+
+    def sleep(self):
+        self.status = "sleep"
+
+        print("LOG: pet is asleep\n")
+            
     def runPet(self): # should be in a multithread        
         while True: 
             now = time.time()
@@ -51,11 +62,19 @@ class Pet():
                     self.happiness = max(self.happiness - 0.5, 0)
                 self.last_happiness_update = now
 
-            # Every 5 minutes sleepiness goes up by 3
-            if now -self.last_sleep_update >= 5 * 60:
-                with self.lock:
-                    self.sleepiness = min(self.sleepiness + 3, 100)
-                self.last_sleep_update = now
+            # if pet is asleep, sleepiness would go down periodically instead
+            if self.status == "sleep":
+                print("LOG:pet is asleep\n")
+                if now - self.last_sleep_update >= 5 * 60: # 5 minutes
+                    with self.lock:
+                        self.sleepiness = max(self.sleepiness - 3, 0)
+                    self.last_sleep_update = now
+            else:
+                # Every 5 minutes sleepiness goes up by 3
+                if now - self.last_sleep_update >= 5 * 60:
+                    with self.lock:
+                        self.sleepiness = min(self.sleepiness + 3, 100)
+                    self.last_sleep_update = now
             
             # print(f"current pet stat: hunger = {hunger}, happiness = {happiness}, sleep = {sleepiness}\n")
 
