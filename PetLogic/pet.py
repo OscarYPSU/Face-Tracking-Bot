@@ -42,10 +42,13 @@ class Pet():
     def getSleep(self):
         return self.sleepiness
 
-    def sleep(self):
-        self.status = "sleep"
+    def ToggleSleep(self):
+        if self.status == "sleep":
+            self.status = "awake"
+        else:
+            self.status = "sleep"
 
-        print("LOG: pet is asleep\n")
+        print(f"LOG: pet is {self.status}\n")
             
     def runPet(self): # should be in a multithread        
         while True: 

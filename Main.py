@@ -1,20 +1,37 @@
 from flask import Flask, render_template, jsonify
-from PetLogic import logic
+from PetLogic import pet
+from PetLogic import petFood
 import threading
 import pdb
+from flask_login import LoginManager, UserMixin as User
 
-#Starts flask application which allows integration of html data to python data and vice versa
+# Configures Flask app and login manager
+loginManager = LoginManager()
 app = Flask(__name__)
+app.secret_key = "ndoiasdjaoisdj"
+loginManager.init_app(app)
 
-pet = logic.Pet()
+
+
+pet = pet.Pet()
+
+
+
 #set  up threadiung for pet logic
 petLogicThread = threading.Thread(target=pet.runPet)
 # Optional: make it a daemon thread so it stops when the main program exits
 petLogicThread.daemon = True
 
+# starts the flask app
 def webStart():
     app.run()
     
+# user fall back for login
+@loginManager.user_loader
+def loadUser(userID):
+    return User.get(userID)
+    
+
 
 @app.route('/')
 def startPage():
@@ -47,7 +64,7 @@ def getSleepiness():
 
 @app.route("/sleepiness", methods=["PUT"])
 def sleep():
-    pet.sleep()
+    pet.ToggleSleep()
     return jsonify({"message":"pet is asleep"})
 
 if __name__ == "__main__":

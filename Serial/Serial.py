@@ -49,6 +49,8 @@ class serial:
             time.sleep(1)  # smaller delay for smoother tracking
     
     def start(self):
+        print("Starting serial face detection\n")
+        
         # ESP32 camera stream
         url = "http://104.38.178.36:81/stream"
         cap = cv2.VideoCapture(url)

@@ -48,3 +48,53 @@ Consolidated multiple face emotion implementations into a single 'emotions' modu
 Refactored pet logic into a Pet class with thread-safe stat updates and new API endpoints for hunger and happiness. Updated Serial.py to add emotion detection and face tracking, sending data to a microcontroller. Improved the web interface to support feeding and display happiness, and updated Flask routes for RESTful API design.
 
 Introduced new API endpoints and logic for sleepiness and play actions in the virtual pet application. Updated the Pet class to handle sleep and play states, including periodic stat updates based on pet status. Enhanced the frontend to display and interact with sleepiness and happiness, allowing users to play with or put the pet to sleep via new buttons and asynchronous JavaScript functions.
+
+Moved and renamed logic.py to pet.py, and updated Main.py to use the new PetLogic modules. Added petFood.py with a basic Food class and Cupcake subclass. Moved static and template files to new locations, splitting JavaScript into static/home.js and updating home.html to reference it. Added redisTest.py for Redis and PostgreSQL integration testing. Minor improvements to Serial.py and pet logic, including a ToggleSleep method.
+
+Developed a secure web application using Flask, Flask-Login, and Redis for session management.
+
+Implemented user authentication and registration with PostgreSQL as the backend database, including INSERT and SELECT queries for storing and verifying credentials.
+
+Integrated Redis to manage user sessions in a scalable and efficient manner, enabling session persistence across server restarts.
+
+Designed a login workflow with session-based access control, protecting routes using @login_required decorators.
+
+Built dynamic templates using render_template_string to handle login and dashboard views.
+
+Applied secure coding practices by using parameterized queries (%s) to prevent SQL injection attacks.
+
+Managed database connections and cursors responsibly to ensure data integrity.
+
+Technologies used: Python, Flask, Flask-Login, Flask-Session, Redis, PostgreSQL (psycopg2), HTML forms.
+
+Developed a real-time digital pet simulation using Flask and Flask-Login for user session management.
+
+Designed RESTful API endpoints (GET, POST, PUT) to interact with the pet’s state, including hunger, happiness, and sleepiness, enabling dynamic updates from the frontend.
+
+Implemented backend game logic in a separate thread to continuously update pet attributes independently of web requests.
+
+Used JSON responses to provide a clean interface between backend logic and frontend templates.
+
+Created interactive routes for feeding, playing, and sleeping, demonstrating event-driven state changes.
+
+Integrated Python classes and object-oriented design (Pet and PetFood) to manage game mechanics modularly.
+
+Technologies used: Python, Flask, Flask-Login, threading, RESTful APIs, JSON, HTML templates.
+
+Developed a real-time face tracking and emotion detection system using OpenCV and FER (Facial Emotion Recognition).
+
+Captured live video streams from an ESP32 camera and processed frames to detect faces and extract top emotions.
+
+Designed multi-threaded Python architecture to simultaneously:
+
+Track face positions and send coordinates to a microcontroller via serial communication.
+
+Detect emotions and transmit emotion data to an OLED display connected to the microcontroller.
+
+Applied Haar Cascade classifiers for fast face detection and optimized frame processing for real-time performance.
+
+Implemented data encoding and transmission over serial ports to interface with embedded devices, enabling responsive interaction between software and hardware.
+
+Added debugging and visualization features using OpenCV to display detected faces, emotion labels, and tracking coordinates.
+
+Technologies used: Python, OpenCV, FER, threading, serial communication, ESP32 camera, real-time data streaming.
