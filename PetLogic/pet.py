@@ -72,7 +72,7 @@ class Pet():
                     with self.lock:
                         self.sleepiness = max(self.sleepiness - 3, 0)
                     self.last_sleep_update = now
-            else:
+            elif self.status == "awake":
                 # Every 5 minutes sleepiness goes up by 3
                 if now - self.last_sleep_update >= 5 * 60:
                     with self.lock:

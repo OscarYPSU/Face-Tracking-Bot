@@ -1,22 +1,35 @@
-from flask import Flask, render_template, jsonify
+from flask import Flask, render_template, jsonify, redirect, url_for
 from PetLogic import pet
 from PetLogic import petFood
 import threading
 import pdb
-from flask_login import LoginManager, UserMixin as User
+
+# for redis as login session for flask
+from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
+from flask_session import Session
+import redis
+
+# import db query functions
+from DB import mainQuery as db
+
 
 # Configures Flask app and login manager
 loginManager = LoginManager()
 app = Flask(__name__)
-app.secret_key = "ndoiasdjaoisdj"
+app.secret_key = "SuperSecretKey"
 loginManager.init_app(app)
 
+# Configure Redis session
+app.config['SESSION_TYPE'] = 'redis'
+app.config['SESSION_PERMANENT'] = False
+app.config['SESSION_USE_SIGNER'] = True
+app.config['SESSION_REDIS'] = redis.Redis(host='localhost', port=6379, db=0)
+Session(app) # applies the change to Flask app from above
 
+
+# set up for pet logic
 
 pet = pet.Pet()
-
-
-
 #set  up threadiung for pet logic
 petLogicThread = threading.Thread(target=pet.runPet)
 # Optional: make it a daemon thread so it stops when the main program exits
@@ -26,13 +39,6 @@ petLogicThread.daemon = True
 def webStart():
     app.run()
     
-# user fall back for login
-@loginManager.user_loader
-def loadUser(userID):
-    return User.get(userID)
-    
-
-
 @app.route('/')
 def startPage():
     return render_template('home.html')
@@ -66,6 +72,19 @@ def getSleepiness():
 def sleep():
     pet.ToggleSleep()
     return jsonify({"message":"pet is asleep"})
+
+class User(UserMixin):
+    def __init__(self, user):
+        self.id = user
+
+@loginManager.user_loader()
+def loadUser(user):
+    if db.checkUser(user):
+        return User(user)
+
+@app.route("/login", methods=["POST", "GET"])
+def login():
+    return redirect(url_for("homepage"))   
 
 if __name__ == "__main__":
     petLogicThread.start()

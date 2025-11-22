@@ -98,3 +98,6 @@ Implemented data encoding and transmission over serial ports to interface with e
 Added debugging and visualization features using OpenCV to display detected faces, emotion labels, and tracking coordinates.
 
 Technologies used: Python, OpenCV, FER, threading, serial communication, ESP32 camera, real-time data streaming.
+
+
+started playing around with flask sessoina dn redis db to store session for login caches. Connected Redis DB using flask session as the database to store authentication session keys. Created queries and functions for queries in postgresql db. used a server side session storage for authetnicaiton. Used parameterized queries and created a custom hashed password encryption before storing passwrods

@@ -25,6 +25,13 @@ def checkUser(username, password):
         return True
     return False
 
+def checkUsername(username):
+    query = "SELECT * FROM Users WHERE username = %s"
+    cur.execute(query, (username,))
+    if cur.fetchone():
+        return True 
+    return False
+
 def registerUser(username, password):
     
     print("registering user")
@@ -48,9 +55,6 @@ app.config['SESSION_REDIS'] = redis.Redis(host='localhost', port=6379, db=0)
 # Initialize session
 Session(app)
 
-# Dummy user store
-USERS = {"admin": {"password": "password123"}}
-
 # Flask-Login setup
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -62,7 +66,7 @@ class User(UserMixin):
 
 @login_manager.user_loader
 def loadUser(username):
-    if checkUser(username):
+    if checkUsername(username): # change this for checking the postgresdatabase
         return User(username)
 
 @app.route("/login", methods=["GET", "POST"])
@@ -103,5 +107,11 @@ def logout():
 
 if __name__ == "__main__":
     app.run(debug=True)
+    
+    # ends session and also closes the database connection and cursor
     cur.close()
     conn.close()
+    login_user()
+    
+
+# learn touse conneciton pooling instead of keepinga  global cursor open (wasts resources)
