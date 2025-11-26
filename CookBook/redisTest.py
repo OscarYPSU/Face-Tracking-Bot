@@ -66,7 +66,7 @@ class User(UserMixin):
 
 @login_manager.user_loader
 def loadUser(username):
-    if checkUsername(username): # change this for checking the postgresdatabase
+    if checkUsername(username):
         return User(username)
 
 @app.route("/login", methods=["GET", "POST"])

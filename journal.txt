@@ -101,3 +101,9 @@ Technologies used: Python, OpenCV, FER, threading, serial communication, ESP32 c
 
 
 started playing around with flask sessoina dn redis db to store session for login caches. Connected Redis DB using flask session as the database to store authentication session keys. Created queries and functions for queries in postgresql db. used a server side session storage for authetnicaiton. Used parameterized queries and created a custom hashed password encryption before storing passwrods
+
+used a multithread connection pool safe to maange connections to database to prevent dataleak. Used contextmanager to prevent forgetful of closing connection(does it auotmicatlly)
+
+Added PostgreSQL connection pooling and query functions for user authentication in DB/mainQuery.py. Updated CookBook/redisTest.py and Main.py to use Redis for session management and PostgreSQL for user queries. Improved login logic and session handling, and added a basic login HTML template. Minor bug fix in PetLogic/pet.py for sleepiness update logic.
+
+properly encrypted user password before putting iont o database and for checking authentication

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, jsonify, redirect, url_for
+from flask import Flask, render_template, jsonify, redirect, url_for, request
 from PetLogic import pet
 from PetLogic import petFood
 import threading
@@ -18,6 +18,7 @@ loginManager = LoginManager()
 app = Flask(__name__)
 app.secret_key = "SuperSecretKey"
 loginManager.init_app(app)
+loginManager.login_view = "login"
 
 # Configure Redis session
 app.config['SESSION_TYPE'] = 'redis'
@@ -38,9 +39,15 @@ petLogicThread.daemon = True
 # starts the flask app
 def webStart():
     app.run()
-    
-@app.route('/')
-def startPage():
+
+@app.route("/")
+@login_required
+def startup():
+    return render_template('home.html')
+
+@app.route('/home')
+@login_required
+def home():
     return render_template('home.html')
 
 @app.route('/hunger', methods=["GET"])
@@ -76,17 +83,50 @@ def sleep():
 class User(UserMixin):
     def __init__(self, user):
         self.id = user
+        self.user = user
 
-@loginManager.user_loader()
+@loginManager.user_loader
 def loadUser(user):
-    if db.checkUser(user):
+    if db.checkUsername(user):
         return User(user)
 
 @app.route("/login", methods=["POST", "GET"])
 def login():
-    return redirect(url_for("homepage"))   
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
+        
+        # authenticate from our mock database
+        print("authenicating user for login\n")
+        if db.checkUser(username, password):
+            print("authentication success\n")
+            user = User(username)
+            login_user(user)  # stores user ID in session (Redis)
+            return redirect(url_for("home"))
+        else:
+            print("authentication not sucess, user sent to register page\n")
+            return redirect(url_for("register"))
+    return render_template("login.html")
+
+@app.route("/register", methods = ["POST", "GET"])
+def register():
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
+        
+        db.registerUser(username, password)
+        
+        return redirect(url_for("login"))
+
+    return render_template("register.html")
+
+@app.route("/logout")
+def logout():
+    logout_user()
+    return redirect(url_for("login"))
 
 if __name__ == "__main__":
     petLogicThread.start()
     webStart()
+
     

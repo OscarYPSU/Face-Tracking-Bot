@@ -5,12 +5,12 @@
   <title>Home</title>
 </head>
 <body>
-  <h1>Hello, World!</h1>
+  <h1>Hello, {{current_user.user}}!</h1>
   <p>Current Hunger is: <span id ="hunger"></span></p>
   <button onclick = "feed()">Feed!</button>
   <p>Current Happiness: <span id = "happiness"></span></p>
   <button onclick = "play()">Play!</button>
-  <p id = "sleepiness">Current Sleepiness</p>
+  <p>Current Sleepiness: <span id = "sleepiness"></span></p>
   <button onclick = "sleep()">Sleep!</button>
 </body>
 <script src = "{{ url_for('static', filename='home.js') }}"></script>
