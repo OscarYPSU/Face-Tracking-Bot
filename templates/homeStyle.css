@@ -1,0 +1,22 @@
+#petSpriteRectangle {
+    width: 200px;
+    height: 200px;
+    background-color: white;
+    border: 2px solid black;
+    position: fixed;
+    top: 20px;
+    right: 20px;
+}
+
+#petSprite{
+    width: 200px;
+    height: 200px;
+    background-image: url("images/Mv-cinnamon\ \(3\).png");
+    background-repeat: no-repeat;
+    animation: blink .5s steps(3) infinite;
+}
+
+@keyframes blink {
+    from{background-position-y: 0px;} 
+    to {background-position-y: -600px;}
+}

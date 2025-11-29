@@ -80,23 +80,25 @@ def sleep():
     pet.ToggleSleep()
     return jsonify({"message":"pet is asleep"})
 
+# Flask friendly User class to store user data for server side cache
 class User(UserMixin):
     def __init__(self, user):
         self.id = user
         self.user = user
 
+# creates a Flask friendly User class for signed in User to be accessed for session management
 @loginManager.user_loader
 def loadUser(user):
     if db.checkUsername(user):
         return User(user)
 
+# login route, takes in username and password
 @app.route("/login", methods=["POST", "GET"])
 def login():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
         
-        # authenticate from our mock database
         print("authenicating user for login\n")
         if db.checkUser(username, password):
             print("authentication success\n")
@@ -108,6 +110,7 @@ def login():
             return redirect(url_for("register"))
     return render_template("login.html")
 
+# Registers new user with username and password into postgreSQL 
 @app.route("/register", methods = ["POST", "GET"])
 def register():
     if request.method == "POST":
@@ -120,6 +123,8 @@ def register():
 
     return render_template("register.html")
 
+
+# Deletes User server side session key
 @app.route("/logout")
 def logout():
     logout_user()
