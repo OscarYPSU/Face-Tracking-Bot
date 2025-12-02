@@ -10,7 +10,7 @@ from flask_session import Session
 import redis
 
 # import db query functions
-from DB import mainQuery as db
+from DB import authenticationQuery as authy
 
 
 # Configures Flask app and login manager
@@ -27,14 +27,8 @@ app.config['SESSION_USE_SIGNER'] = True
 app.config['SESSION_REDIS'] = redis.Redis(host='localhost', port=6379, db=0)
 Session(app) # applies the change to Flask app from above
 
-
-# set up for pet logic
-
-pet = pet.Pet()
-#set  up threadiung for pet logic
-petLogicThread = threading.Thread(target=pet.runPet)
-# Optional: make it a daemon thread so it stops when the main program exits
-petLogicThread.daemon = True
+# Placeholder for user pet data
+userPet = None
 
 # starts the flask app
 def webStart():
@@ -52,7 +46,7 @@ def home():
 
 @app.route('/hunger', methods=["GET"])
 def getHunger():
-    data = {"hunger": pet.getHunger()} # gets data
+    data = {"hunger": userPet.getHunger()} # gets data
     return jsonify(data)
 
 @app.route("/hunger", methods=["POST"])
@@ -62,7 +56,7 @@ def addHunger():
 
 @app.route('/happiness', methods=["GET"])
 def getHappiness():
-    data = {"happiness": pet.getHappiness()} # gets data
+    data = {"happiness": userPet.getHappiness()} # gets data
     return jsonify(data)
 
 @app.route('/happiness', methods=["POST"])
@@ -72,12 +66,12 @@ def play():
 
 @app.route('/sleepiness', methods=["GET"])
 def getSleepiness():
-    data = {"sleepiness":pet.getSleep()}
+    data = {"sleepiness":userPet.getSleep()}
     return jsonify(data)
 
 @app.route("/sleepiness", methods=["PUT"])
 def sleep():
-    pet.ToggleSleep()
+    userPet.ToggleSleep()
     return jsonify({"message":"pet is asleep"})
 
 # Flask friendly User class to store user data for server side cache
@@ -89,21 +83,32 @@ class User(UserMixin):
 # creates a Flask friendly User class for signed in User to be accessed for session management
 @loginManager.user_loader
 def loadUser(user):
-    if db.checkUsername(user):
+    if authy.checkUsername(user):
         return User(user)
 
 # login route, takes in username and password
 @app.route("/login", methods=["POST", "GET"])
 def login():
+    global userPet
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
         
         print("authenicating user for login\n")
-        if db.checkUser(username, password):
+        if authy.login(username, password):
             print("authentication success\n")
             user = User(username)
             login_user(user)  # stores user ID in session (Redis)
+            
+            # set up for pet logic
+            userPet = pet.Pet(username)
+            #set  up threadiung for pet logic
+            petLogicThread = threading.Thread(target=userPet.runPet)
+            # Optional: make it a daemon thread so it stops when the main program exits
+            petLogicThread.daemon = True
+            # Starts the pet mechanics in the background in a multhread
+            
+            petLogicThread.start()
             return redirect(url_for("home"))
         else:
             print("authentication not sucess, user sent to register page\n")
@@ -117,9 +122,10 @@ def register():
         username = request.form["username"]
         password = request.form["password"]
         
-        db.registerUser(username, password)
-        
-        return redirect(url_for("login"))
+        if authy.register(username, password):
+            return redirect(url_for("login"))
+        else:
+            return redirect(url_for("register"))
 
     return render_template("register.html")
 
@@ -131,7 +137,9 @@ def logout():
     return redirect(url_for("login"))
 
 if __name__ == "__main__":
-    petLogicThread.start()
     webStart()
+    
+    
+    logout()
 
     

@@ -2,17 +2,24 @@ import threading
 import time
 import pdb
 
+# pet data from user database
+import DB.userDataQuery as DB
+
 
 # Lock to prevent race conditions if other threads read/write these
 lock = threading.Lock()
 
 class Pet():
-    def __init__(self):
+    def __init__(self, username):
+        
+        # Gets the data from the user's database first 
+        data = DB.getAllUserPetData(username)
+        
         # Pet stats
-        self.hunger = 50;      # 0 = full, 100 = starving
+        self.hunger = data["hunger"];      # 0 = full, 100 = starving
         self.health = 100;     # 0 = dead, 100 = healthy
-        self.sleepiness = 0;   # 0 = wide awake, 100 = exhausted
-        self.happiness = 80; # 0 = Depressed, 50 = content, 100 = happy
+        self.sleepiness = data["sleepiness"];   # 0 = wide awake, 100 = exhausted
+        self.happiness = data["happiness"]; # 0 = Depressed, 50 = content, 100 = happy
         # also want to add statuses
         self.age = 0; # add a age system
         self.status = "" # eg. sleep, playing etc...
