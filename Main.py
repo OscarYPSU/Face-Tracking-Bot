@@ -10,7 +10,7 @@ from flask_session import Session
 import redis
 
 # import db query functions
-from DB import authenticationQuery as authy
+from DB import authenticationQuery as authy, userDataQuery as DB
 
 
 # Configures Flask app and login manager
@@ -46,32 +46,32 @@ def home():
 
 @app.route('/hunger', methods=["GET"])
 def getHunger():
-    data = {"hunger": userPet.getHunger()} # gets data
+    data = {"hunger": current_user.userPet.getHunger()} # gets data
     return jsonify(data)
 
 @app.route("/hunger", methods=["POST"])
 def addHunger():
-    pet.feed()
+    current_user.userPet.feed()
     return jsonify({"message":"Pet Fed!"})
 
 @app.route('/happiness', methods=["GET"])
 def getHappiness():
-    data = {"happiness": userPet.getHappiness()} # gets data
+    data = {"happiness": current_user.userPet.getHappiness()} # gets data
     return jsonify(data)
 
 @app.route('/happiness', methods=["POST"])
 def play():
-    pet.play()
+    pecurrent_user.userPett.play()
     return jsonify({"message":"pet is played with!"})
 
 @app.route('/sleepiness', methods=["GET"])
 def getSleepiness():
-    data = {"sleepiness":userPet.getSleep()}
+    data = {"sleepiness":current_user.userPet.getSleep()}
     return jsonify(data)
 
 @app.route("/sleepiness", methods=["PUT"])
 def sleep():
-    userPet.ToggleSleep()
+    current_user.userPet.ToggleSleep()
     return jsonify({"message":"pet is asleep"})
 
 # Flask friendly User class to store user data for server side cache
@@ -79,6 +79,7 @@ class User(UserMixin):
     def __init__(self, user):
         self.id = user
         self.user = user
+        self.userPet = userPetDict[user]
 
 # creates a Flask friendly User class for signed in User to be accessed for session management
 @loginManager.user_loader
@@ -99,16 +100,6 @@ def login():
             print("authentication success\n")
             user = User(username)
             login_user(user)  # stores user ID in session (Redis)
-            
-            # set up for pet logic
-            userPet = pet.Pet(username)
-            #set  up threadiung for pet logic
-            petLogicThread = threading.Thread(target=userPet.runPet)
-            # Optional: make it a daemon thread so it stops when the main program exits
-            petLogicThread.daemon = True
-            # Starts the pet mechanics in the background in a multhread
-            
-            petLogicThread.start()
             return redirect(url_for("home"))
         else:
             print("authentication not sucess, user sent to register page\n")
@@ -136,10 +127,36 @@ def logout():
     logout_user()
     return redirect(url_for("login"))
 
+# for keeping track of individual user threads
+userThread = {}
+userPetDict = {}
+
+def startThread():
+    print("starting pet thread for user\n")
+    
+    # gets all username exisiting in DB
+    datas = DB.getAllUsername()
+    
+    for row in datas:
+        # set up for pet logic
+        userPet = pet.Pet(row[0])
+        petLogicThread = threading.Thread(target=userPet.runPet)
+        # Optional: make it a daemon thread so it stops when the main program exits
+        petLogicThread.daemon = True
+        # Starts the pet mechanics in the background in a multhread
+        petLogicThread.start()
+        
+        # stores data for record keeping
+        userThread[row[0]] = petLogicThread
+        userPetDict[row[0]] = userPet
+
+
 if __name__ == "__main__":
+    # starts thread for user pet mechanics
+    startThread()
+    
     webStart()
-    
-    
+
     logout()
 
     

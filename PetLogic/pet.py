@@ -14,6 +14,8 @@ class Pet():
         
         # Gets the data from the user's database first 
         data = DB.getAllUserPetData(username)
+        self.username = username
+        
         
         # Pet stats
         self.hunger = data["hunger"];      # 0 = full, 100 = starving
@@ -38,7 +40,7 @@ class Pet():
         return self.hunger
 
     def feed(self):
-        self.hunger += 5
+        self.hunger -= 5
 
     def getHappiness(self):
         return self.happiness
@@ -60,16 +62,16 @@ class Pet():
     def runPet(self): # should be in a multithread        
         while True: 
             now = time.time()
-            # Every 5 minutes hunger down by one
+            # Every 5 minutes hunger up by one
             if now - self.last_hunger_update >= 5 * 60:
                 with self.lock:
-                    self.hunger = min(self.hunger - 1, 100)
+                    self.hunger = min(self.hunger + 1, 100)
                 self.last_hunger_update = now
 
-            # Every 1 minute happiness goes down by 0.5
+            # Every 1 minute happiness goes down by 1
             if now - self.last_happiness_update >= 60:
                 with self.lock:
-                    self.happiness = max(self.happiness - 0.5, 0)
+                    self.happiness = max(self.happiness - 1, 0)
                 self.last_happiness_update = now
 
             # if pet is asleep, sleepiness would go down periodically instead
@@ -88,4 +90,8 @@ class Pet():
             
             # print(f"current pet stat: hunger = {hunger}, happiness = {happiness}, sleep = {sleepiness}\n")
 
+            # Packs the updated pet status together to postgresql database
+            data = {"sleepiness":self.sleepiness, "happiness":self.happiness, "hunger":self.hunger}
+            DB.updateUserPetData(self.username, data)
+            
             time.sleep(1)  # sleep a bit so the loop doesn’t use 100% CPU

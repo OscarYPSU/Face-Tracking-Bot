@@ -1,4 +1,5 @@
 from DB.connectionPool import getConn
+import PetLogic.pet as petClass
 
 # intializes user data for their pet when they create an account
 def createUserData(userID, username):
@@ -34,5 +35,29 @@ def getAllUserPetData(username):
 
     return 
 
-def updateUserPetData(username):
-    return 
+def updateUserPetData(username, data):
+    query = "UPDATE public.\"userdata\" SET happiness = %s, hunger = %s, sleepiness = %s WHERE username = %s"
+    
+    print("updating user pet data\n")
+    
+    # Unpacks the data given from pet class
+    happiness = data["happiness"]
+    sleepiness = data["sleepiness"]
+    hunger = data["hunger"]
+    
+    with getConn() as conn:
+        cur = conn.cursor()
+        cur.execute(query, (happiness, hunger, sleepiness, username))
+        conn.commit()
+
+def getAllUsername():
+    query = "SELECT username FROM public.\"userdata\""
+    
+    with getConn() as conn:
+        cur = conn.cursor()
+        cur.execute(query)
+        datas = cur.fetchall()
+        
+        return datas
+    
+     
