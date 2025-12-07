@@ -24,7 +24,7 @@ class Pet():
         self.happiness = data["happiness"]; # 0 = Depressed, 50 = content, 100 = happy
         # also want to add statuses
         self.age = 0; # add a age system
-        self.status = "" # eg. sleep, playing etc...
+        self.status = "awake" # eg. sleep, playing etc...
 
         # use counters to track elapsed time for each stat
         self.last_hunger_update = time.time()
@@ -40,13 +40,14 @@ class Pet():
         return self.hunger
 
     def feed(self):
-        self.hunger -= 5
+        self.hunger = max(self.hunger - 5, 0)
+        
 
     def getHappiness(self):
         return self.happiness
 
     def play(self):
-        self.happiness += 5
+        self.happiness = min(self.happiness + 5, 100)
     
     def getSleep(self):
         return self.sleepiness

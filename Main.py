@@ -61,7 +61,7 @@ def getHappiness():
 
 @app.route('/happiness', methods=["POST"])
 def play():
-    pecurrent_user.userPett.play()
+    current_user.userPet.play()
     return jsonify({"message":"pet is played with!"})
 
 @app.route('/sleepiness', methods=["GET"])
@@ -155,8 +155,10 @@ if __name__ == "__main__":
     # starts thread for user pet mechanics
     startThread()
     
+    # Starts the web
     webStart()
 
+    # if web is closed, automatically logs out
     logout()
 
     

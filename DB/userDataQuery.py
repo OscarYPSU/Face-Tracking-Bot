@@ -38,8 +38,6 @@ def getAllUserPetData(username):
 def updateUserPetData(username, data):
     query = "UPDATE public.\"userdata\" SET happiness = %s, hunger = %s, sleepiness = %s WHERE username = %s"
     
-    print("updating user pet data\n")
-    
     # Unpacks the data given from pet class
     happiness = data["happiness"]
     sleepiness = data["sleepiness"]
