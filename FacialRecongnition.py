@@ -1,10 +1,9 @@
-import cv2
 import serial
 import time
 import threading
-
 #emotion detection
 from fer import FER
+import cv2
 # Initialize FER detector outside the thread
 emotion_detector = FER(mtcnn=True)  # mtcnn=True uses better face detection internally
 

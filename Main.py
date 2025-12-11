@@ -25,7 +25,13 @@ app.config['SESSION_TYPE'] = 'redis'
 app.config['SESSION_PERMANENT'] = False
 app.config['SESSION_USE_SIGNER'] = True
 app.config['SESSION_REDIS'] = redis.Redis(host='localhost', port=6379, db=0)
+app.config['PERMANENT_SESSION_LIFETIME'] = 3600 # Change this for how long each user session lasts
 Session(app) # applies the change to Flask app from above
+
+# Flush Redis once on server start
+app.config['SESSION_REDIS'].flushdb()
+print("Flushed all sessions on startup")
+
 
 # Placeholder for user pet data
 userPet = None

@@ -94,12 +94,12 @@ class serial:
             result = self.emotion_detector.detect_emotions(self.frame)
             for face in result:
                 (x, y, w, h) = face["box"]
-                top_emotion = self.emotion_detector.top_emotion(frame[y:y+h, x:x+w])
+                top_emotion = self.emotion_detector.top_emotion(self.frame[y:y+h, x:x+w])
                 cv2.rectangle(self.frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
                 cv2.putText(self.frame, f"{top_emotion}", (x, y-10), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255,0,0), 2)
             
             # Draw frame center
-            cv2.circle(self.frame, (frame_center_x, frame_center_y), 5, (0, 0, 255), -1)
+            cv2.circle(self.frame, (self.frame_center_x, self.frame_center_y), 5, (0, 0, 255), -1)
 
             cv2.imshow("Face Detection (Lightweight)", self.frame)
 
