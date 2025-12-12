@@ -128,10 +128,10 @@ def register():
 
 
 # Deletes User server side session key
-@app.route("/logout")
+@app.route("/logout", methods = ["POST"])
 def logout():
     logout_user()
-    return redirect(url_for("login"))
+    return
 
 # for keeping track of individual user threads
 userThread = {}

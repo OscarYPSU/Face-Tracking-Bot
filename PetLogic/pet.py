@@ -24,7 +24,7 @@ class Pet():
         self.happiness = data["happiness"]; # 0 = Depressed, 50 = content, 100 = happy
         # also want to add statuses
         self.age = 0; # add a age system
-        self.status = "awake" # eg. sleep, playing etc...
+        self.status = data["status"]; # eg. sleep, playing etc...
 
         # use counters to track elapsed time for each stat
         self.last_hunger_update = time.time()
@@ -58,7 +58,7 @@ class Pet():
         else:
             self.status = "sleep"
 
-        print(f"LOG: pet is {self.status}\n")
+        print(f"LOG: User = {self.username}, pet is {self.status}\n")
             
     def runPet(self): # should be in a multithread        
         while True: 
@@ -77,7 +77,6 @@ class Pet():
 
             # if pet is asleep, sleepiness would go down periodically instead
             if self.status == "sleep":
-                print("LOG:pet is asleep\n")
                 if now - self.last_sleep_update >= 5 * 60: # 5 minutes
                     with self.lock:
                         self.sleepiness = max(self.sleepiness - 3, 0)
@@ -92,7 +91,7 @@ class Pet():
             # print(f"current pet stat: hunger = {hunger}, happiness = {happiness}, sleep = {sleepiness}\n")
 
             # Packs the updated pet status together to postgresql database
-            data = {"sleepiness":self.sleepiness, "happiness":self.happiness, "hunger":self.hunger}
+            data = {"sleepiness":self.sleepiness, "happiness":self.happiness, "hunger":self.hunger, "status":self.status}
             DB.updateUserPetData(self.username, data)
             
             time.sleep(1)  # sleep a bit so the loop doesn’t use 100% CPU

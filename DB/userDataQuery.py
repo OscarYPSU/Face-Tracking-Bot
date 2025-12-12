@@ -19,33 +19,34 @@ def getAllUserPetData(username):
     # Log 
     print(f"fetching user pet data : {username}\n")
     
-    query = "SELECT happiness, sleepiness, hunger FROM public.\"userdata\" WHERE username = %s"
+    query = "SELECT happiness, sleepiness, hunger, status FROM public.\"userdata\" WHERE username = %s"
     
     with getConn() as conn:
         cur = conn.cursor()
         cur.execute(query, (username,))
         
         data = cur.fetchone() # the return row of data
-        happiness, sleepiness, hunger = data
+        happiness, sleepiness, hunger, status = data
         
         # Log
         print(f"Received user pet data = {data}\n")
         
-        return {"happiness":happiness, "sleepiness":sleepiness, "hunger":hunger}
+        return {"happiness":happiness, "sleepiness":sleepiness, "hunger":hunger, "status":status}
 
     return 
 
 def updateUserPetData(username, data):
-    query = "UPDATE public.\"userdata\" SET happiness = %s, hunger = %s, sleepiness = %s WHERE username = %s"
+    query = "UPDATE public.\"userdata\" SET happiness = %s, hunger = %s, sleepiness = %s, status = %s WHERE username = %s"
     
     # Unpacks the data given from pet class
     happiness = data["happiness"]
     sleepiness = data["sleepiness"]
     hunger = data["hunger"]
+    status = data["status"]
     
     with getConn() as conn:
         cur = conn.cursor()
-        cur.execute(query, (happiness, hunger, sleepiness, username))
+        cur.execute(query, (happiness, hunger, sleepiness, status, username))
         conn.commit()
 
 def getAllUsername():

@@ -17,7 +17,16 @@
     <div id = "petSprite"></div>
   </div>
 
+  <button onclick = "logout()">Logout!</button>
 
 </body>
 <script src = "{{ url_for('static', filename='home.js') }}"></script>
+<script>
+  const loggedIn = {{ 'true' if current_user.is_authenticated else 'false' }};
+  if (loggedIn){
+    setInterval(updateHunger, 1000);
+    setInterval(updateHappiness, 1000);
+    setInterval(updateSleep, 1000);
+  }
+</script>
 <link rel = "stylesheet" href="{{ url_for('static', filename='homeStyle.css')}}">

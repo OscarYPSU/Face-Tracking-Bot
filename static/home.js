@@ -47,7 +47,11 @@ async function sleep(){
     updateSleep();
 }
 
-// Fetch hunger every second
-setInterval(updateHunger, 1000);
-setInterval(updateHappiness, 1000);
-setInterval(updateSleep, 1000);
+async function logout(){
+    const response = await fetch('/logout',{
+        method: "POST"
+    });
+    window.location.href = '/register'; // redirect client-side
+
+}
+
