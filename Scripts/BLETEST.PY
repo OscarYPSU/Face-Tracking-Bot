@@ -1,8 +1,12 @@
 import asyncio
-from bleak import BleakScanner, BleakClient
+from bleak import BleakScanner, BleakClient, BleakError 
 
 # Replace this with the ID you found (MAC address or UUID)
 ADDRESS = "1C:DB:D4:AE:D4:F5"
+
+# MCU disconnected
+def on_disconnect(_):
+    print("⚠️ MCU disconnected!")
 
 async def run_scanner():
     print("Scanning for devices...")
@@ -18,7 +22,7 @@ async def connect_to_device():
     print(f"Connecting to {ADDRESS}...")
     
     # Using 'async with' ensures the connection closes automatically when done
-    async with BleakClient(ADDRESS) as client:
+    async with BleakClient(ADDRESS, disconnected_callback=on_disconnect) as client:
         if client.is_connected:
             print("Successfully connected! ✅")
             
@@ -28,9 +32,19 @@ async def connect_to_device():
                 for char in service.characteristics:
                     print(f"  - Characteristic: {char.uuid} ({','.join(char.properties)})")
             
-            await client.write_gatt_char("beb5483e-36e1-4688-b7f5-ea07361b26a8", "0".encode())
-            print(f"sent a value over to MC\n")
-
+            while client.is_connected:
+                # asks user for input 0 or 1
+                user_input = input("Enter 0 or 1 ")
+                
+                # check to see if MCU is still on
+                try:
+                    await client.write_gatt_char("beb5483e-36e1-4688-b7f5-ea07361b26a8", user_input.encode())
+                    print("Sent value to MCU\n")
+                except BleakError as e:
+                    print(f"❌ Write failed (MCU likely disconnected): {e}")
+                    break
+            else:
+                print("MCU disconncted\n")
         else:
             print("Failed to connect. ❌")
         await client.disconnect()

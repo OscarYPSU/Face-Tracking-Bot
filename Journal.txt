@@ -129,3 +129,9 @@ Started using a venv for project, working w linux etc
 Reorganized BLETest into PlatformIO format under BLETest/BLETest, added .gitignore, VSCode config, and documentation files. Migrated and updated platformio.ini, replaced BLETest.ino with src/main.cpp implementing BLE LED control via BLE characteristic.
 
 Starting using a venv to ensure that it odesnt only work on my laptop
+
+Introduces MyServerCallbacks in main.cpp to handle BLE device connect/disconnect events and restart advertising on disconnect. Adds Scripts/BLETEST.PY for scanning and connecting to BLE devices using Bleak. Updates Journal.txt with venv usage note.
+had problem with MCU not being able to be connected again after being disconnected due to hanging connection from script ending.
+
+Added esp2.cpp implementing a BLE server for a second ESP32-S3 MCU with custom connect/disconnect callbacks and advertising restart. Updated platformio.ini to define two MCU environments with selective source inclusion. Enhanced BLETEST.PY to support repeated user input for BLE characteristic writes and improved disconnect handling. Updated Journal.txt with notes on venv usage and BLE reconnect issue.
+using python script to start both MCU and run extensive testing on them
