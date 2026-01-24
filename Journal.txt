@@ -127,3 +127,5 @@ Introduces a new GraphQL API in CookBook/graphqlapi.py and a placeholder schemag
 Started using a venv for project, working w linux etc
 
 Reorganized BLETest into PlatformIO format under BLETest/BLETest, added .gitignore, VSCode config, and documentation files. Migrated and updated platformio.ini, replaced BLETest.ino with src/main.cpp implementing BLE LED control via BLE characteristic.
+
+Starting using a venv to ensure that it odesnt only work on my laptop

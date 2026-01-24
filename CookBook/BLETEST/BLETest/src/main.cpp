@@ -27,6 +27,21 @@ class MyCallbacks: public BLECharacteristicCallbacks {
     }
 };
 
+class MyServerCallbacks: public BLEServerCallbacks {
+    void onConnect(BLEServer* pServer) {
+      Serial.println("Device connected! 📱");
+    };
+
+    void onDisconnect(BLEServer* pServer) {
+      Serial.println("Device disconnected... 🔌");
+      // This is the key: tell the ESP32 to start advertising again
+      BLEDevice::startAdvertising();
+      Serial.println("Restarted advertising!");
+    }
+};
+
+
+
 // Global pointers so we can reference them if needed
 BLECharacteristic *pCharacteristic;
 
@@ -44,6 +59,7 @@ void setup() {
   );
 
   // Link our Callback class to the characteristic
+  pServer->setCallbacks(new MyServerCallbacks());
   pCharacteristic->setCallbacks(new MyCallbacks());
 
   // Set initial value
