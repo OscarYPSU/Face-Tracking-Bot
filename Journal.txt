@@ -135,3 +135,6 @@ had problem with MCU not being able to be connected again after being disconnect
 
 Added esp2.cpp implementing a BLE server for a second ESP32-S3 MCU with custom connect/disconnect callbacks and advertising restart. Updated platformio.ini to define two MCU environments with selective source inclusion. Enhanced BLETEST.PY to support repeated user input for BLE characteristic writes and improved disconnect handling. Updated Journal.txt with notes on venv usage and BLE reconnect issue.
 using python script to start both MCU and run extensive testing on them
+Having trouble understand between sending BYTES and standard string. Need to learn how machine interact w bytes and normal values like int and strings
+
+Added BLETEST-Client.py for BLE communication via Python. Refactored PlatformIO config to use client.cpp and server.cpp for two MCU environments, replacing esp2.cpp and main.cpp. Renamed and relocated BLETEST-Server.PY. Updated Journal.txt with notes on byte/string handling. Added notes and terminal script documentation for development workflow.
