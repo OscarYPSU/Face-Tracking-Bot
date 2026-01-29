@@ -137,4 +137,5 @@ Added esp2.cpp implementing a BLE server for a second ESP32-S3 MCU with custom c
 using python script to start both MCU and run extensive testing on them
 Having trouble understand between sending BYTES and standard string. Need to learn how machine interact w bytes and normal values like int and strings
 
-Added BLETEST-Client.py for BLE communication via Python. Refactored PlatformIO config to use client.cpp and server.cpp for two MCU environments, replacing esp2.cpp and main.cpp. Renamed and relocated BLETEST-Server.PY. Updated Journal.txt with notes on byte/string handling. Added notes and terminal script documentation for development workflow.
+Added BLETEST-Client.py for BLE communication via Python. Refactored PlatformIO config to use client.cpp and server.cpp for two MCU environments, replacing esp2.cpp and main.cpp. Renamed and relocated BLETEST-Server.PY. Updated Journal.txt with notes on byte/string handling. Added notes and terminal script documentation for development workflow. 
+-Added a client ESP32-S3, advertising for python backend to connect to for remote control then starts scanning for other MCU and connecting to the appriopiate using serviceUUID (thinking of implementing custom handshake protocol 
